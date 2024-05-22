@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  - ${contextPath} 설정은 WAS 서버에서 사용되는 것과 WEB 서버에서의 리소스 경로가
+  - 달라질 수 있기 때문에 컨텍스트 패스를 사용하는 리소스에 대하여 설정한다.
+  -->
+<configuration>
+
+    <javascript-config>
+        <!-- 프레임워크 라이브러리 -->
+        <user>
+            <base>
+                <js>
+                    <![CDATA[
+<script type="text/javascript">var CTX_PATH="${contextPath}";</script>
+<!-- jquery core -->
+<script type="text/javascript" src="${contextPath}/resources/libs/jquery/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/jquery-ui-1.11.3.custom/jquery-ui.min.js"></script>
+
+<!-- 설정 동기화 -->
+<script type="text/javascript" src="${contextPath}/component/js/ND_globalConfig.do" ></script>
+<script type="text/javascript" src="${contextPath}/component/js/ND_massageConfig.do" ></script>
+
+<!-- Openworks 공통 메소드 -->
+<script type="text/javascript" src="${contextPath}/resources/openworks4/js/openworks.global.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/openworks4/js/openworks.message.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/openworks4/js/openworks.initialize.js"></script>
+                    ]]>
+                </js>
+                <css>
+                    <![CDATA[
+<!-- customize -->
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/openworks4/css/openworks4-custom.css">
+                    ]]>
+                </css>
+            </base>
+             <opvalidate>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/openworks4/js/validate/openworks.validate.js"></script>
+                    ]]>
+                </js>
+            </opvalidate>
+            <opform>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/openworks4/js/openworks.form.js"></script>
+                    ]]>
+                </js>
+            </opform>
+            <ui>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/openworks4/js/openworks.ui.js"></script>
+                    ]]>
+                </js>
+            </ui>
+            <!-- Tree UI : http://wwwendt.de/tech/fancytree/demo/  https://github.com/mar10/fancytree/ -->
+            <tree>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/fancytree-2.12.0/js/jquery.fancytree-all.min.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/openworks4/js/openworks.tree.js"></script>
+                    ]]>
+                </js>
+                <css>
+                    <![CDATA[
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/libs/fancytree-2.7.0/css/skin-lion/ui.fancytree.css" />
+                    ]]>
+                </css>
+            </tree>
+            <!-- modal 박스 http://fancyapps.com/fancybox/   -->
+            <modal>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/fancybox-2.1.5/js/jquery.fancybox.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/openworks4/js/openworks.modal.js"></script>
+                    ]]>
+                </js>
+                <css>
+                    <![CDATA[
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/libs/fancybox-2.1.5/css/jquery.fancybox.css" />
+                    ]]>
+                </css>
+            </modal>
+            <popup>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/js-cookie-1.5.1/js.cookie.js"></script>
+<script type="text/javascript" src="${contextPath}/component/popup/ND_popupConfig.do"></script>
+                    ]]>
+                </js>
+                <css>
+                    <![CDATA[
+                    ]]>
+                </css>
+            </popup>
+            <!-- amchart 기본 라이브러리 -->
+            <opChart>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/amcharts-3.18.6/amcharts.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/amcharts-3.18.6/serial.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/amcharts-3.18.6/pie.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/amcharts-3.18.6/radar.js"></script>
+
+<script type="text/javascript" src="${contextPath}/resources/libs/amcharts-3.18.6/themes/light.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/amcharts-3.18.6/themes/dark.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/amcharts-3.18.6/themes/black.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/amcharts-3.18.6/themes/chalk.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/amcharts-3.18.6/themes/patterns.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/openworks4/js/opChart/openworks.chart.common.js"></script>
+<!--[if (!IE) | (gte IE 10)]> -->
+<script type="text/javascript" src="${contextPath}/resources/libs/amcharts-3.18.6/plugins/export/export.js"></script>
+<!-- <![endif]-->
+                    ]]>
+                </js>
+                <css>
+                    <![CDATA[
+<!--[if (!IE) | (gte IE 10)]> -->
+<link  type="text/css" href="${contextPath}/resources/libs/amcharts-3.18.6/plugins/export/export.css" rel="stylesheet">
+<!-- <![endif]-->
+<link href='http://fonts.googleapis.com/css?family=Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+                    ]]>
+                </css>
+            </opChart>
+            <!-- 바, 선, 영역 -->
+            <opBar>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/openworks4/js/opChart/openworks.chart.bar.js"></script>
+                    ]]>
+                </js>
+            </opBar>
+            <!-- 파이 -->
+            <opPie>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/openworks4/js/opChart/openworks.chart.pie.js"></script>
+                    ]]>
+                </js>
+            </opPie>
+            <!-- 믹스 -->
+            <opMix>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/openworks4/js/opChart/openworks.chart.mixed.js"></script>
+                    ]]>
+                </js>
+            </opMix>
+            <!-- 레이더 -->
+            <opRadar>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/openworks4/js/opChart/openworks.chart.radar.js"></script>
+                    ]]>
+                </js>
+            </opRadar>
+            <opPassword>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/cryptoJS-v3.1.2/rollups/aes.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/cryptoJS-v3.1.2/rollups/pbkdf2.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/openworks4/js/openworks.password.js"></script>
+                    ]]>
+                </js>
+            </opPassword>
+        </user>
+        <!-- 외부 라이브러리 -->
+        <libs>
+            <jquery>
+                <js>
+                    <![CDATA[
+<!-- jquery core -->
+<script type="text/javascript" src="${contextPath}/resources/libs/jquery/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/jquery-ui-1.11.3.custom/jquery-ui.min.js"></script>
+                    ]]>
+                </js>
+                <css>
+                    <![CDATA[
+                    ]]>
+                </css>
+            </jquery>
+            <jqueryui>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/jquery-ui-1.11.3.custom/jquery-ui.min.js"></script>
+                    ]]>
+                </js>
+                <css>
+                    <![CDATA[
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/libs/jquery-ui-1.11.3.custom/jquery-ui.min.css">
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/libs/jquery-ui-1.11.3.custom/jquery-ui.theme.min.css">
+                    ]]>
+                </css>
+            </jqueryui>
+            <!-- https://github.com/js-cookie/js-cookie/tree/v1.5.1 -->
+            <cookie>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/js-cookie-1.5.1/js.cookie.js"></script>
+                    ]]>
+                </js>
+            </cookie>
+            <!--  https://developers.google.com/recaptcha/intro  -->
+            <captcha>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+<script type="text/javascript" src="${contextPath}/resources/openworks4/js/openworks.captcha.js"></script>
+                    ]]>
+                </js>
+            </captcha>
+            <!-- bootstrap doc http://getbootstrap.com/ -->
+            <docs>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/bootstrap-docs/docs.min.js"></script>
+                    ]]>
+                </js>
+                <css>
+                    <![CDATA[
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/libs/bootstrap-docs/docs.min.css" />
+                    ]]>
+                </css>
+            </docs>
+            <!-- http://www.snyderplace.com/demos/collapsible.html https://github.com/juven14/Collapsible  -->
+            <collapsible>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/collapsible-1.2.1/jquery.collapsible.js"></script>
+                    ]]>
+                </js>
+            </collapsible>
+            <!-- 웹 에디터 http://ckeditor.com/ -->
+            <ckeditor>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/ckeditor-4.12.1/ckeditor.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/ckeditor-4.12.1/config.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/ckeditor-4.12.1/adapters/jquery.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/ckeditor-4.12.1/ckeditor.toolbar.set.js"></script>
+                    ]]>
+                </js>
+            </ckeditor>
+            <!-- image holder 생성 https://github.com/imsky/holder / http://holderjs.com/ -->
+            <!-- 동일 폴더 경로에 있는 스크립트 필요시 코드 추가 필요 -->
+            <holder>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/holder-2.5/holder.js"></script>
+                    ]]>
+                </js>
+            </holder>
+            <!-- datetimepicker(date/time picker로 사용)
+                    DOWN : https://github.com/Eonasdan/bootstrap-datetimepicker
+                    DOC : http://eonasdan.github.io/bootstrap-datetimepicker/ -->
+            <datetime>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/datetimepicker-4.0/js/bootstrap-datetimepicker.js"></script>
+                    ]]>
+                </js>
+            </datetime>
+            <!-- 기간 범위 설정용 date picker
+                DOWN : https://github.com/dangrossman/bootstrap-daterangepicker
+                DOC : http://www.dangrossman.info/2012/08/20/a-date-range-picker-for-twitter-bootstrap/ -->
+            <datetimerange>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/moment-2.9.0/js/moment.min.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/daterangepicker-1.3.17/js/daterangepicker.js"></script>
+                    ]]>
+                </js>
+                <css>
+                    <![CDATA[
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/libs/daterangepicker-1.3.17/css/daterangepicker-bs3.css" />
+                    ]]>
+                </css>
+            </datetimerange>
+            <!-- 파일 업로드(blueimp-file-upload 9.9.2) : http://blueimp.github.io/jQuery-File-Upload/index.html -->
+            <fileupload>
+                <js>
+<![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/blueimp-file-upload-9.9.2/js/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/blueimp-file-upload-9.9.2/js/jquery.fileupload.js"></script>
+
+<script type="text/javascript" src="${contextPath}/resources/libs/blueimp-file-upload-9.9.2/js/jquery.fileupload-process.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/blueimp-file-upload-9.9.2/js/jquery.fileupload-image.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/blueimp-file-upload-9.9.2/js/jquery.fileupload-audio.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/blueimp-file-upload-9.9.2/js/jquery.fileupload-video.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/blueimp-file-upload-9.9.2/js/jquery.fileupload-validate.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/blueimp-file-upload-9.9.2/js/jquery.fileupload-ui.js"></script>
+
+<!-- The XDomainRequest Transport is included for cross-domain file deletion for IE 8 and IE 9 -->
+<!--[if (gte IE 8)&(lt IE 10)]>
+<script src="${contextPath}/resources/libs/blueimp-file-upload-9.9.2/js/cors/jquery.xdr-transport.js"></script>
+<![endif]-->
+]]>
+                </js>
+                <css>
+<![CDATA[
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/libs/blueimp-file-upload-9.9.2/css/jquery.fileupload.css" />
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/libs/blueimp-file-upload-9.9.2/css/jquery.fileupload-ui.css" />
+<!-- CSS adjustments for browsers with JavaScript disabled -->
+<noscript><link rel="stylesheet" href="${contextPath}/resources/libs/blueimp-file-upload-9.9.2/css/jquery.fileupload-noscript.css"></noscript>
+<noscript><link rel="stylesheet" href="${contextPath}/resources/libs/blueimp-file-upload-9.9.2/css/jquery.fileupload-ui-noscript.css"></noscript>
+]]>
+                </css>
+            </fileupload>
+            <!-- 메시지 패널 : https://github.com/stanlemon/jGrowl -->
+            <jgrowl>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/jgrowl-1.4.1/js/jquery.jgrowl.min.js"></script>
+                    ]]>
+                </js>
+                <css>
+                    <![CDATA[
+<!-- <link rel="stylesheet" type="text/css" href="${contextPath}/resources/libs/jgrowl-1.4.1/css/jquery.jgrowl.min.css" /> -->
+                    ]]>
+                </css>
+            </jgrowl>
+            <!-- select box 디자인 https://github.com/select2 -->
+            <select2>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/select2-3.4.3/select2.min.js"></script>
+                    ]]>
+                </js>
+            </select2>
+
+            <!-- 폼 벨리데이터 http://jqueryvalidation.org/ https://github.com/jzaefferer/jquery-validation -->
+            <validate>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/validation-1.13.1/jquery.validate.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/libs/validation-1.13.1/additional-methods.js"></script>
+
+<!--                     <script type="text/javascript" src="${contextPath}/resources/openworks/spi/jquery/validate/jquery.validate.settings.js"></script> -->
+<!--                     <script type="text/javascript" src="${contextPath}/resources/openworks/spi/jquery/validate/jquery.validate.messages.js"></script> -->
+                    ]]>
+                </js>
+                <css>
+                    <![CDATA[
+<!-- <link rel="stylesheet" type="text/css" href="${contextPath}/resources/openworks/spi/jquery/validate/jquery.validate.css" /> -->
+                    ]]>
+                </css>
+            </validate>
+            <!-- 폼 유틸 https://github.com/malsup/form/  https://github.com/malsup/form/ -->
+            <form>
+                <js>
+                    <![CDATA[
+<script type="text/javascript" src="${contextPath}/resources/libs/form-3.51.0/jquery.form.js"></script>
+                    ]]>
+                </js>
+            </form>
+
+            <!-- 파일 업로드 폼 유틸 http://www.fyneworks.com/jquery/multiple-file-upload/ -->
+            <multifile>
+                <js>
+                    <![CDATA[
+                    <script type="text/javascript" src="${contextPath}/resources/libs/multifile-2.0.3/js/jquery.MultiFile.js"></script>
+                    ]]>
+                </js>
+            </multifile>
+
+            <!-- timer : javascript의 Interval 메소드에 해당 http://www.mattptr.net -->
+            <timer>
+                <js>
+                    <![CDATA[
+                    <script type="text/javascript" src="${contextPath}/resources/openworks/spi/jquery/timer/jquery.timer.js"></script>
+                    ]]>
+                </js>
+            </timer>
+            <!-- select tag util http://www.texotela.co.uk/code/jquery/select/ -->
+            <selectbox>
+                <js>
+                    <![CDATA[
+                    <script type="text/javascript" src="${contextPath}/resources/libs/selectbox/jquery.selectboxes.js"></script>
+<!--                     <script type="text/javascript" src="${contextPath}/resources/openworks/spi/jquery/selectbox/jquery.selectboxes.js"></script> -->
+                    ]]>
+                </js>
+            </selectbox>
+            <!-- Cookie Plugin -->
+            <cookie>
+                <js>
+                    <![CDATA[
+                    <script type="text/javascript" src="${contextPath}/resources/openworks/spi/jquery/cookie/jquery.cookie.js"></script>
+                    ]]>
+                </js>
+            </cookie>
+            <!-- Highlight Plugin -->
+            <highlight>
+                <js>
+                    <![CDATA[
+                    <script type="text/javascript" src="${contextPath}/resources/libs/highlight/jquery.jmHighlight.js"></script>
+                    ]]>
+                </js>
+                <css>
+                    <![CDATA[
+                    <link rel="stylesheet" type="text/css" href="${contextPath}/resources/libs/highlight/jquery.jmHighlight.css" />
+                    ]]>
+                </css>
+            </highlight>
+            <form>
+                <js>
+                    <![CDATA[
+                    <script type="text/javascript" src="${contextPath}/resources/libs/form-3.51.0/jquery.form.js"></script>
+                    ]]>
+                </js>
+            </form>
+        </libs>
+
+    </javascript-config>
+</configuration>

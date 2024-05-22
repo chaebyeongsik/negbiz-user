@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <core-config>
+        <!-- 기본 케릭터 인코딩 -->
+        <defaultCharset>utf-8</defaultCharset>
+
+        <!-- 기본암호화 유형 -->
+        <defaultEnctype>ARIA</defaultEnctype>
+
+        <!-- 기본 압축/해제 유형 -->
+        <defaultCompressType>zip</defaultCompressType>
+    </core-config>
+</configuration>

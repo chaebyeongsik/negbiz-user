@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zesinc.user.join.UserJoinMapper">
+
+    <sql id="selectUser">
+            A.USER_ID,
+            A.USER_NM,
+            A.USER_PSWD,
+            A.USER_IDNTF_NM,
+            A.EML_ID,
+            A.EML_SITE_NM,
+            A.JOIN_TYPE_SN,
+            A.RGN_TELNO,
+            A.TELOFC_TELNO,
+            A.INDIV_TELNO,
+            A.ZIP,
+            A.USER_ADDR,
+            A.DADDR,
+            A.LAST_CNTN_DT,
+            A.ITRST_ARTCL_CN,
+            A.LGN_NMTM,
+            A.USER_TYPE_NM,
+            A.USER_GRD_CD_DSCTN,
+            A.USER_STTS_SN,
+            A.PSWD_CHG_DT,
+            A.RGTR_ID,
+            (SELECT PIC_NM FROM TN_MNGR WHERE PIC_ID = A.RGTR_ID) AS RGTR_NM,
+            A.REG_DT,
+            A.UPDT_DT,
+            A.MDFR_ID,
+            (SELECT PIC_NM FROM TN_MNGR WHERE PIC_ID = A.MDFR_ID) AS UPDUSR_NM,
+    </sql>
+    <!-- 사용자 조회 -->
+    <select id="selectUserByUserKey" parameterType="userJoinVo" resultType="userJoinVo">
+        SELECT
+        <trim suffixOverrides=",">
+            <include refid="selectUser"/>
+        </trim>
+       FROM TN_USER A
+      WHERE A.USER_IDNTF_NM = #{userId}
+    </select>
+
+    <!-- 사용자 조회 -->
+    <select id="selectUserByUserId" parameterType="userJoinVo" resultType="userJoinVo">
+        SELECT
+        <trim suffixOverrides=",">
+            <include refid="selectUser"/>
+        </trim>
+       FROM TN_USER A
+      WHERE A.USER_ID = #{userId}
+    </select>
+
+    <!-- 개인 사용자 등록 -->
+    <insert id="insertIndvdlUser" parameterType="userJoinVo">
+        INSERT INTO TN_USER (
+        <trim suffixOverrides=",">
+            USER_ID,
+            USER_NM,
+            USER_PSWD,
+            USER_IDNTF_NM,
+            EML_ID,
+            EML_SITE_NM,
+            JOIN_TYPE_SN,
+            RGN_TELNO,
+            TELOFC_TELNO,
+            INDIV_TELNO,
+            ZIP,
+            USER_ADDR,
+            DADDR,
+            ITRST_ARTCL_CN,
+            USER_TYPE_NM,
+            USER_GRD_CD_DSCTN,
+            USER_STTS_SN,
+            RGTR_ID,
+            REG_DT,
+        </trim>
+        ) VALUES (
+        <trim suffixOverrides=",">
+            CONCAT('U', LPAD((SELECT NEXTVAL('USER_SEQ') FROM DUAL), 9, '0')),
+            #{userNm},
+            #{userPswd},
+            #{userId},
+            #{emlId},
+            #{emlSiteNm},
+            <choose>
+            	<when test="joinTypeSn == '' ">
+            		NULL,
+            	</when>
+            	<otherwise>
+             		#{joinTypeSn},          	
+            	</otherwise>
+            </choose>
+            #{rgnTelno},
+            #{telofcTelno},
+            #{indivTelno},
+            #{zip},
+            #{userAddr},
+            #{daddr},
+            #{itrstArtclCn},
+            #{userTypeNm},
+            #{userGrdCdDsctn},
+            #{userSttsSn},
+            #{rgtrId},
+            NOW(),
+        </trim>
+        )
+    </insert>
+
+    <!-- 개인사용자 기타정보 등록 -->
+    <insert id="insertIndvdlUserEtcInfo" parameterType="userJoinVo">
+        INSERT INTO TN_USER_ETC_INFO (
+               USER_ID
+             , RRNO
+             , MBL_RGN_TELNO
+             , MBL_TELOFC_TELNO
+             , MBL_INDIV_TELNO
+             , BRDT
+             <if test="brdt != null and brdt != ''"><!-- 생일 있는 경우만 음력/양력/윤달 여부 등록  -->
+             , BRTH_YMD_CLSF_SN
+             </if>
+             , GNDR_CLSF_SN
+             , EML_RCPTN_AGRE_CLSF_SN
+             , SMS_RCPTN_CLSF_SN
+             , LAST_ACBG_NO
+             , MRG_SE_SN
+             , WRC_NM
+             , JBTTL_NM
+             , WRC_ZIP
+             , WRC_ADDR
+             , WRC_DADDR
+             , WRC_RGN_TELNO
+             , WRC_TELOFC_TELNO
+             , WRC_INDIV_TELNO
+        )VALUES(
+               #{userId}
+             , #{rrno}
+             , #{mblRgnTelno}
+             , #{mblTelofcTelno}
+             , #{mblIndivTelno}
+             , #{brdt}
+             <if test="brdt != null and brdt != ''"><!-- 생일 있는 경우만 음력/양력/윤달 여부 등록  -->
+             , #{brthYmdClsfSn}
+             </if>
+             , #{gndrClsfSn}
+             , #{emlRcptnAgreClsfSn}
+             , #{smsRcptnClsfSn}
+             , #{lastAcbgNo}
+             , #{mrgSeSn}
+             , #{wrcNm}
+             , #{jbttlNm}
+             , #{wrcZip}
+             , #{wrcAddr}
+             , #{wrcDaddr}
+             , #{wrcRgnTelno}
+             , #{wrcTelofcTelno}
+             , #{wrcIndivTelno}
+        )
+    </insert>
+
+    <!-- 개인사용자 기타정보 수정 -->
+    <update id="updateIndvdlUserEtcInfo" parameterType="userJoinVo">
+        UPDATE TN_USER_ETC_INFO
+          <set>
+             <if test="rrno != null and rrno != ''">
+             RRNO           = #{rrno},
+             </if>
+             MBL_RGN_TELNO       = #{mblRgnTelno},
+             MBL_TELOFC_TELNO       = #{mblTelofcTelno},
+             MBL_INDIV_TELNO       = #{mblIndivTelno},
+             BRDT             = #{brdt},
+             BRTH_YMD_CLSF_SN = #{brthYmdClsfSn},
+             GNDR_CLSF_SN            = #{gndrClsfSn},
+             EML_RCPTN_AGRE_CLSF_SN     = #{emlRcptnAgreClsfSn},
+             SMS_RCPTN_CLSF_SN      = #{smsRcptnClsfSn},
+             LAST_ACBG_NO        = #{lastAcbgNo},
+             MRG_SE_SN            = #{mrgSeSn},
+             WRC_NM             = #{wrcNm},
+             JBTTL_NM             = #{jbttlNm},
+             WRC_ZIP            = #{wrcZip},
+             WRC_ADDR     = #{wrcAddr},
+             WRC_DADDR   = #{wrcDaddr},
+             WRC_RGN_TELNO         = #{wrcRgnTelno},
+             WRC_TELOFC_TELNO         = #{wrcTelofcTelno},
+             WRC_INDIV_TELNO         = #{wrcIndivTelno},
+          </set>
+         WHERE USER_ID          = #{userId}
+    </update>
+
+    <!-- 사용자아이디 중복체크 -->
+    <select id="selectDupCheckUserId" resultType="int" parameterType="userJoinVo">
+        SELECT COUNT(*)
+          FROM TN_USER
+         WHERE USER_IDNTF_NM = #{userId}
+    </select>
+
+    <select id="selectIndvdlUserInfo" parameterType="userJoinVo" resultType="userJoinVo">
+        /* selectIndvdlUserInfo */
+        SELECT A.USER_ID
+             , A.USER_IDNTF_NM
+             , A.USER_NM
+             , A.USER_PSWD
+             , A.EML_ID
+             , A.EML_SITE_NM
+             , A.JOIN_TYPE_SN
+             , A.RGN_TELNO
+             , A.TELOFC_TELNO
+             , A.INDIV_TELNO
+             , A.ZIP
+             , A.USER_ADDR
+             , A.DADDR
+             , A.REG_DT
+             , A.USER_TYPE_NM
+             , A.RGTR_ID
+             , A.USER_GRD_CD_DSCTN
+             , A.USER_STTS_SN
+             , A.LAST_CNTN_DT
+             , A.ITRST_ARTCL_CN
+             , A.ITRST_ARTCL_CN
+             , B.RRNO
+             , B.MBL_RGN_TELNO
+             , B.MBL_TELOFC_TELNO
+             , B.MBL_INDIV_TELNO
+             , B.BRDT
+             , B.BRTH_YMD_CLSF_SN
+             , B.GNDR_CLSF_SN
+             , B.EML_RCPTN_AGRE_CLSF_SN
+             , B.SMS_RCPTN_CLSF_SN
+             , B.LAST_ACBG_NO
+             , B.MRG_SE_SN
+             , B.WRC_NM
+             , B.JBTTL_NM
+             , B.WRC_ZIP
+             , B.WRC_ADDR
+             , B.WRC_DADDR
+             , B.WRC_RGN_TELNO
+             , B.WRC_TELOFC_TELNO
+             , B.WRC_INDIV_TELNO
+          FROM TN_USER A
+             , TN_USER_ETC_INFO B
+         WHERE A.USER_ID = #{userId}
+           AND A.USER_ID = B.USER_ID
+    </select>
+
+    <update id="updateIndvdlUser" parameterType="userJoinVo">
+        UPDATE TN_USER
+           SET UPDT_DT            = NOW()
+             , MDFR_ID          = #{mdfrId}
+             , EML_ID             = #{emlId}
+             , EML_SITE_NM             = #{emlSiteNm}
+             <choose>
+            	<when test="joinTypeSn == '' ">
+            		 , JOIN_TYPE_SN = NULL
+            	</when>
+            	<otherwise>
+             		, JOIN_TYPE_SN = #{joinTypeSn}        	
+            	</otherwise>
+            </choose>
+             , RGN_TELNO             = #{rgnTelno}
+             , TELOFC_TELNO             = #{telofcTelno}
+             , INDIV_TELNO             = #{indivTelno}
+             , ZIP                = #{zip}
+             , USER_ADDR         = #{userAddr}
+             , DADDR       = #{daddr}
+             , USER_GRD_CD_DSCTN= #{userGrdCdDsctn}
+             , USER_STTS_SN         = #{userSttsSn}
+             , ITRST_ARTCL_CN      = #{itrstArtclCn}
+         WHERE USER_ID    = #{userId}
+    </update>
+
+    <!-- 기업 사용자 등록 -->
+    <insert id="insertEntrprsUser" parameterType="userJoinVo">
+        INSERT INTO TN_USER (
+        <trim suffixOverrides=",">
+            USER_ID,
+            USER_NM,
+            USER_PSWD,
+            USER_IDNTF_NM,
+            EML_ID,
+            EML_SITE_NM,
+            JOIN_TYPE_SN,
+            RGN_TELNO,
+            TELOFC_TELNO,
+            INDIV_TELNO,
+            ZIP,
+            USER_ADDR,
+            DADDR,
+            ITRST_ARTCL_CN,
+            USER_TYPE_NM,
+            USER_STTS_SN,
+            RGTR_ID,
+            REG_DT,
+        </trim>
+        ) VALUES (
+        <trim suffixOverrides=",">
+            CONCAT('U', LPAD((SELECT NEXTVAL('USER_SEQ') FROM DUAL), 9, '0')),
+            #{userNm},
+            #{userPswd},
+            #{userId},
+            #{emlId},
+            #{emlSiteNm},
+            <choose>
+            	<when test="joinTypeSn == '' ">
+            		NULL,
+            	</when>
+            	<otherwise>
+             		#{joinTypeSn},          	
+            	</otherwise>
+            </choose>
+            #{rgnTelno},
+            #{telofcTelno},
+            #{indivTelno},
+            #{zip},
+            #{userAddr},
+            #{daddr},
+            #{itrstArtclCn},
+            #{userTypeNm},
+            #{userSttsSn},
+            #{rgtrId},
+            NOW(),
+        </trim>
+        )
+    </insert>
+
+    <!-- 기업사용자 기타정보 등록 -->
+    <insert id="insertEntrprsUserEtcInfo" parameterType="userJoinVo">
+        INSERT INTO TN_USER_ENTRPRS_ETC_INFO (
+               USER_ID
+             , CRNO
+             , BRNO
+             , PIC_NM
+             , DEPT_NM
+             , JBTTL_NM
+             , MBL_RGN_TELNO
+             , MBL_TELOFC_TELNO
+             , MBL_INDIV_TELNO
+             , DEPT_RGN_TELNO
+             , DEPT_TELOFC_TELNO
+             , DEPT_INDIV_TELNO
+             , RGN_FXNO
+             , TELOFC_FXNO
+             , INDIV_FXNO
+             , RPRSV_NM
+        )VALUES(
+               #{userId}
+             , #{crno}
+             , #{brno}
+             , #{picNm}
+             , #{deptNm}
+             , #{jbttlNm}
+             , #{mblRgnTelno}
+             , #{mblTelofcTelno}
+             , #{mblIndivTelno}
+             , #{deptRgnTelno}
+             , #{deptTelofcTelno}
+             , #{deptIndivTelno}
+             , #{rgnFxno}
+             , #{telofcFxno}
+             , #{indivFxno}
+             , #{rprsvNm}
+        )
+    </insert>
+
+    <select id="selectEntrprsUserInfo" parameterType="userJoinVo" resultType="userJoinVo">
+        /* selectEntrprsUserInfo */
+        SELECT A.USER_ID
+             , A.USER_IDNTF_NM
+             , A.USER_NM
+             , A.USER_PSWD
+             , A.RGN_TELNO
+             , A.TELOFC_TELNO
+             , A.INDIV_TELNO
+             , A.ZIP
+             , A.USER_ADDR
+             , A.DADDR
+             , A.USER_TYPE_NM
+             , A.USER_STTS_SN
+             , A.RGTR_ID
+             , A.REG_DT
+             , A.MDFR_ID
+             , A.UPDT_DT
+             , A.LAST_CNTN_DT
+             , A.EML_ID
+             , A.EML_SITE_NM
+             , A.JOIN_TYPE_SN
+             , A.ITRST_ARTCL_CN
+             , B.RPRSV_NM
+             , B.CRNO
+             , B.BRNO
+             , B.PIC_NM
+             , B.DEPT_NM
+             , B.JBTTL_NM
+             , B.MBL_RGN_TELNO
+             , B.MBL_TELOFC_TELNO
+             , B.MBL_INDIV_TELNO
+             , B.DEPT_RGN_TELNO
+             , B.DEPT_TELOFC_TELNO
+             , B.DEPT_INDIV_TELNO
+             , B.RGN_FXNO
+             , B.TELOFC_FXNO
+             , B.INDIV_FXNO
+          FROM TN_USER A
+             , TN_USER_ENTRPRS_ETC_INFO B
+         WHERE A.USER_ID = #{userId}
+           AND A.USER_ID = B.USER_ID
+    </select>
+
+    <!-- 사업자 추가정보 입력위한 기본정보수정 쿼리문 -->
+    <update id="updateEntrprsUser" parameterType="userJoinVo">
+        UPDATE TN_USER
+           SET UPDT_DT       = NOW()
+             , MDFR_ID     = #{mdfrId}
+             , EML_ID        = #{emlId}
+             , EML_SITE_NM        = #{emlSiteNm}
+             <choose>
+            	<when test="joinTypeSn == '' ">
+            		 , JOIN_TYPE_SN = NULL
+            	</when>
+            	<otherwise>
+             		, JOIN_TYPE_SN = #{joinTypeSn}        	
+            	</otherwise>
+            </choose>
+             , RGN_TELNO        = #{rgnTelno}
+             , TELOFC_TELNO        = #{telofcTelno}
+             , INDIV_TELNO        = #{indivTelno}
+             , ZIP           = #{zip}
+             , USER_ADDR    = #{userAddr}
+             , DADDR  = #{daddr}
+             , USER_NM       = #{userNm}
+             , USER_STTS_SN    = #{userSttsSn}
+             , ITRST_ARTCL_CN = #{itrstArtclCn}
+         WHERE USER_ID       = #{userId}
+    </update>
+
+    <!-- 사업자 추가정보 입력위한 추가정보수정 쿼리문 -->
+    <update id="updateEntrprsUserEtcInfo" parameterType="userJoinVo">
+        UPDATE TN_USER_ENTRPRS_ETC_INFO
+           SET CRNO      = #{crno},
+               BRNO       = #{brno},
+               PIC_NM    = #{picNm},
+               DEPT_NM       = #{deptNm},
+               JBTTL_NM        = #{jbttlNm},
+               MBL_RGN_TELNO  = #{mblRgnTelno},
+               MBL_TELOFC_TELNO  = #{mblTelofcTelno},
+               MBL_INDIV_TELNO  = #{mblIndivTelno},
+               DEPT_RGN_TELNO   = #{deptRgnTelno},
+               DEPT_TELOFC_TELNO   = #{deptTelofcTelno},
+               DEPT_INDIV_TELNO   = #{deptIndivTelno},
+               RGN_FXNO        = #{rgnFxno},
+               TELOFC_FXNO        = #{telofcFxno},
+               INDIV_FXNO        = #{indivFxno},
+               RPRSV_NM    = #{rprsvNm}
+         WHERE USER_ID       = #{userId}
+    </update>
+
+    <select id="selectIndvdlUserInfoIemEstbsYn" resultType="userInfoIemEstbsVo">
+        SELECT (SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1001) AS ihidnumUseAt<!-- 주민등록번호 사용여부 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1002) AS emailUseAt<!--  이메일 사용여부 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1003) AS telnoUseAt<!-- 전화번호 사용여부 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1004) AS moblphonNoUseAt<!-- 휴대전화 사용여부 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1005) AS adresUseAt<!-- 주소 사용여부 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1006) AS brthdyUseAt<!-- 생일 사용여부 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1007) AS sexdstnUseAt<!-- 성별 사용여부 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1008) AS mailingSvcUseAt<!-- 메일링서비스 사용여부 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1009) AS smsRecptnUseAt<!-- SMS수신 사용여부 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1010) AS captchaUseAt<!-- 자동가입방지 사용여부 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1101) AS lastAcdmcrUseAt<!-- 최종학력 사용여부 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1102) AS mrrgUseAt<!-- 결혼사용여부 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1103) AS wrcNmUseAt<!-- 직장명 사용여부 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1104) AS rspofcUseAt<!-- 직책 사용여부 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1105) AS wrcAdresUseAt<!-- 직장주소 사용여부 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1106) AS wrcTelnoUseAt<!-- 직장전화번호 사용여부 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1107) AS intrstIemNmUseAt<!-- 관심항목명 사용여부 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1108) AS mileageUseAt<!-- 마일리지 사용여부 -->
+              ,(SELECT ARTCL_TYPE_CD      FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 1000) AS indvdlUserUseAt<!-- 개인사용자 사용여부 -->
+              ,(SELECT ARTCL_TYPE_CD      FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 2000) AS bsnmUserUseAt<!-- 사업자사용자 사용여부 -->
+        FROM DUAL
+    </select>
+
+    <select id="selectEntrprsUserInfoIemEstbsYn" resultType="userInfoIemEstbsVo">
+        /* selectEntrprsUserInfoIemEstbsYn */
+        SELECT (SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 2002) AS rprsntvNmUseAt<!-- 대표자명 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 2003) AS bizrnoUseAt<!-- 사업자등록번호 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 2004) AS jurirnoUseAt<!-- 법인등록번호 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 2005) AS adresUseAt<!-- 주소 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 2006) AS telnoUseAt<!-- 전화번호 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 2007) AS captchaUseAt<!-- 자동가입방지 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 2101) AS picNmUseAt<!-- 담당자명 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 2102) AS deptNmUseAt<!-- 부서명 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 2103) AS rspofcUseAt<!-- 직책 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 2104) AS emailUseAt<!-- 이메일 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 2105) AS moblphonNoUseAt<!-- 휴대전화번호 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 2106) AS deptTelnoUseAt<!-- 부서전화번호 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 2107) AS fxnumUseAt<!-- 팩스번호 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 2108) AS intrstIemNmUseAt<!-- 관심항목명 -->
+              ,(SELECT USE_YN_SN FROM TN_USER_INFO_IEM_ESTBS WHERE STNG_ARTCL_SN = 2109) AS mileageUseAt<!-- 마일리지 -->
+        FROM DUAL
+    </select>
+
+    <select id="selectUserGradList" parameterType="userJoinVo" resultType="userJoinVo">
+    /* selectUserGradList */
+        SELECT USER_GRD_CD_ID,
+               USER_GRD_NM,
+               USER_GRD_EXPLN,
+               USE_YN,
+               (SELECT PIC_NM FROM TN_MNGR WHERE PIC_ID = GRAD.RGTR_ID) AS RGTR_NM,
+               RGTR_ID,
+               REG_DT,
+               (SELECT PIC_NM FROM TN_MNGR WHERE PIC_ID = GRAD.MDFR_ID) AS UPDUSR_NM,
+               MDFR_ID,
+               UPDT_DT
+          FROM TN_USER_GRAD GRAD
+         WHERE USE_YN = #{useYn}
+    </select>
+</mapper>

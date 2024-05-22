@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <!-- 게시판 관리 기본 설정 -->
+    <bbs-config>
+        <!-- 게시판 Tag Lib에서 자동 생성되는 코드에서 사용하는 class 명으로 디자인시 아래 이름으로 CSS를 작성해야 함 -->
+        <!-- 목록/상세/등록/수정 화면에서 소스보기를 통하여 각 클레스명을 확인하고 적용한다. -->
+
+        <!-- bbsCheckBoxClass : input type="checkbox" tag에 적용되는 class 이름 -->
+        <!-- bbsRadioClass : input type="radio" tag에 적용되는 class 이름 -->
+        <!-- bbsTextareaClass : textarea tag에 적용되는 class 이름 -->
+        <!-- bbsInputClass : 일반 input tag에 적용되는 class 이름 -->
+        <!-- bbsSelectClass : select tag에 적용되는 class 이름 -->
+        <!-- bbsFileClass : input type="file" tag에 적용되는 class 이름 -->
+        <!-- bbsDateClass : input type="date" 또는 날짜형 input tag에 적용되는 class 이름 -->
+        <!-- bbsEmailClass :  input type="date" 또는 E-mail input tag에 적용되는 class 이름 -->
+        <!-- bbsLabelClass : label tag에 적용되는 class 이름 -->
+        <!-- bbsCheckBoxLabelClass : checkbox를 감싸고 있는 label tag에 적용되는 class 이름  -->
+        <!-- bbsRadioLabelClass : radio를 감싸고 있는 label tag에 적용되는 class 이름 -->
+        <!-- bbsHelpBlockClass : 해당컬럼에 대한 설명을 표시하는 class 이름 -->
+        <!-- bbsInnerButtonClass : 화면 내부에 위치하는 버튼 class 이름 -->
+
+        <!-- bbsRequireClass : 필수입력항목 태그 class 이름 -->
+
+        <!-- bbsReplyIco : 답글표시 아이콘 -->
+        <!-- bbsNewIco : 새글표시 아이콘 -->
+        <!-- bbsFileIco : 파일표시 아이콘 -->
+        <!-- bbsCmntIco : 댓글갯수 아이콘 -->
+        <bbsStyle>
+            <bbsCheckBoxClass>checkbox</bbsCheckBoxClass>
+            <bbsRadioClass>radio</bbsRadioClass>
+            <bbsTextareaClass>form-control</bbsTextareaClass>
+            <bbsInputClass>form-control</bbsInputClass>
+            <bbsSelectClass>form-control</bbsSelectClass>
+            <bbsFileClass>form-control</bbsFileClass>
+            <bbsDateClass>form-control</bbsDateClass>
+            <bbsEmailClass>form-control</bbsEmailClass>
+            <bbsLabelClass>control-label col-sm-2</bbsLabelClass>
+            <bbsCheckBoxLabelClass></bbsCheckBoxLabelClass>
+            <bbsRadioLabelClass></bbsRadioLabelClass>
+            <bbsHelpBlockClass>help-block text-info</bbsHelpBlockClass>
+            <bbsInnerButtonClass>btn btn-xs btn-success</bbsInnerButtonClass>
+
+            <bbsRequireClass>mandatory</bbsRequireClass>
+
+            <bbsReplyIco>/resources/openworks4/theme/default/images/bbs/btn_reply.gif</bbsReplyIco>
+            <bbsNewIco>/resources/openworks4/theme/default/images/bbs/ico_new.gif</bbsNewIco>
+            <bbsFileIco></bbsFileIco>
+            <bbsCmntIco>/resources/openworks4/theme/default/images/bbs/ico_cmnt.gif</bbsCmntIco>
+        </bbsStyle>
+    </bbs-config>
+
+<typeAliases></typeAliases>
+</configuration>

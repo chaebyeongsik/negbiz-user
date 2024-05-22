@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <user-config>
+        <urls>
+            <userRenewPassword>/user/join/BD_updatePasswordForm.do</userRenewPassword>
+        </urls>
+    </user-config>
+</configuration>

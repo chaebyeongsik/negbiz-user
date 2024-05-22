@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <settings>
+        <setting name="lazyLoadingEnabled" value="true" />
+        <!-- <setting name="cacheEnabled" value="true" /> -->
+        <setting name="multipleResultSetsEnabled" value="true" />
+        <setting name="useColumnLabel" value="true" />
+        <setting name="useGeneratedKeys" value="false" />
+        <setting name="defaultExecutorType" value="SIMPLE" />
+        <setting name="defaultStatementTimeout" value="30" />
+        <setting name="safeRowBoundsEnabled" value="false" />
+        <setting name="mapUnderscoreToCamelCase" value="true" />
+        <setting name="localCacheScope" value="SESSION" />
+        <setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString" />
+        <setting name="jdbcTypeForNull" value="NULL" />
+    </settings>
+
+    <typeAliases>
+
+        <!-- /////////////////////////////////////////////////////////////////////////////////////////////// -->
+        <!-- 공통 VO Alias -->
+        <!-- /////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+        <typeAlias alias="hmap" type="java.util.HashMap" />
+        <typeAlias alias="baseVo" type="zesinc.web.vo.BaseVO" />
+        <typeAlias alias="FeedVo" type="zesinc.web.vo.FeedVO" />
+        <typeAlias alias="treeVo" type="zesinc.web.vo.TreeVO" />
+        <typeAlias alias="fileVo" type="zesinc.component.file.domain.FileVO" />
+        <typeAlias alias="jsPopupVo" type="zesinc.component.popup.domain.JsPopupVO" />
+        <typeAlias alias="excelDownloadVo" type="zesinc.component.excel.download.domain.ExcelDownloadVO" />
+
+        <!-- 사용자메뉴미리보기 -->
+         <typeAlias alias="cmsPreviewVo" type="zesinc.user.cms.preview.domain.CmsPreviewVO" />
+        <!-- 사용자메뉴평가 -->
+         <typeAlias alias="cmsEvlVo" type="zesinc.user.cms.evl.domain.CmsEvlVO" />
+
+        <!-- File 관리 -->
+        <typeAlias alias="fileLogVo" type="zesinc.component.file.domain.FileLogVO" />
+
+        <!-- 자원파일 다운로드 -->
+        <typeAlias alias="compResrceFileVo" type="zesinc.component.resrce.file.domain.ResrceFileVO" />
+
+        <!-- CRUD 셈플 -->
+        <typeAlias alias="crudVo" type="zesinc.samples.crud.domain.CrudVO" />
+        <typeAlias alias="crudReplyVo" type="zesinc.samples.crud.domain.CrudReplyVO" />
+
+        <!-- /////////////////////////////////////////////////////////////////////////////////////////////// -->
+        <!-- Cache VO Alias -->
+        <!-- /////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+        <!-- 도메인(사이트) 케시 -->
+        <typeAlias alias="domnCacheVo" type="zesinc.web.vo.cache.DomnCacheVO" />
+        <typeAlias alias="domnGroupCacheVo" type="zesinc.web.vo.cache.DomnGroupCacheVO" />
+
+        <!-- 사용자메뉴 케시 -->
+        <typeAlias alias="cmsCacheVo" type="zesinc.web.vo.cache.CmsCacheVO" />
+        <typeAlias alias="cmsMngrCacheVo" type="zesinc.web.vo.cache.CmsMngrCacheVO" />
+        <typeAlias alias="cmsUrlCacheVo" type="zesinc.web.vo.cache.CmsUrlCacheVO" />
+        <typeAlias alias="cmsUserGradCacheVo" type="zesinc.web.vo.cache.CmsUserGradCacheVO" />
+
+        <!-- 코드 케시 -->
+        <typeAlias alias="codeCacheVo" type="zesinc.web.vo.cache.CodeCacheVO" />
+
+        <!-- 다국어 메시지 케시 -->
+        <typeAlias alias="multilangCacheVo" type="zesinc.web.vo.cache.MultilangCacheVO" />
+
+        <!-- 금지단어(금칙어) 케시 -->
+        <typeAlias alias="prhibtWrdCacheVo" type="zesinc.web.vo.cache.PrhibtWrdCacheVO" />
+
+        <!-- 게시판 환경설정 캐시 -->
+        <typeAlias alias="bbsConfigCacheVo" type="zesinc.web.vo.cache.BbsConfigCacheVO" />
+        <typeAlias alias="bbsDomnCacheVo" type="zesinc.web.vo.cache.BbsDomnCacheVO" />
+        <typeAlias alias="bbsCtgryCacheVo" type="zesinc.web.vo.cache.BbsCtgryCacheVO" />
+        <typeAlias alias="bbsItemCacheVo" type="zesinc.web.vo.cache.BbsItemCacheVO" />
+
+        <!-- /////////////////////////////////////////////////////////////////////////////////////////////// -->
+        <!-- 프로그램별 VO Alias -->
+        <!-- /////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+        <!-- 로그인 관리 -->
+        <typeAlias alias="loginVo" type="zesinc.login.domain.UserLoginVO" />
+
+        <!-- 게시판 관리 -->
+        <typeAlias alias="bbsVo" type="zesinc.user.bbs.domain.BbsVO" />
+        <typeAlias alias="bbsCmntVo" type="zesinc.user.bbs.domain.BbsCmntVO" />
+        <typeAlias alias="bbsTagVo" type="zesinc.user.bbs.domain.BbsTagVO" />
+
+        <!-- 사용자 가입 관리 -->
+        <typeAlias alias="userJoinVo" type="zesinc.user.join.domain.UserJoinVO" />
+        <typeAlias alias="userInfoIemEstbsVo" type="zesinc.user.join.domain.UserInfoIemEstbsVO" />
+
+        <!-- 배너 -->
+        <typeAlias alias="userBannerVo" type="zesinc.user.banner.domain.BannerVO" />
+
+        <!-- 일정관리 -->
+        <typeAlias alias="schdulVo" type="zesinc.user.schdul.domain.SchdulVO" />
+        <typeAlias alias="schdulDetailVo" type="zesinc.user.schdul.domain.SchdulDetailVO" />
+
+        <!-- 메인화면 -->
+        <typeAlias alias="mainBbsVo" type="zesinc.user.main.domain.MainBbsVO" />
+        
+        <!-- 폼빌더 -->
+        <typeAlias alias="formInfoVo" type="zesinc.user.form.domain.FormInfoVO" />
+        <typeAlias alias="formGroupVo" type="zesinc.user.form.domain.FormGroupVO" />
+        <typeAlias alias="groupItemVo" type="zesinc.user.form.domain.GroupItemVO" />
+        <typeAlias alias="itemOptVo" type="zesinc.user.form.domain.ItemOptVO" />
+        <typeAlias alias="headVo" type="zesinc.user.form.domain.FormRspnsHeadVO" />
+        <typeAlias alias="rspnsVo" type="zesinc.user.form.domain.FormRspnsVO" />
+
+    </typeAliases>
+
+</configuration>

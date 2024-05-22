@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zesinc.login.UserLoginMapper">
+
+    <select id="selectUserInfoByUserKey" parameterType="loginVo" resultType="loginVo">
+        SELECT A.USER_IDNTF_NM,
+               A.USER_ID,
+               A.USER_NM,
+               A.USER_PSWD,
+               A.EML_ID,
+               A.EML_SITE_NM,
+               A.RGN_TELNO,
+               A.TELOFC_TELNO,
+               A.INDIV_TELNO,
+               A.ZIP,
+               A.USER_ADDR,
+               A.DADDR,
+               A.USER_TYPE_NM,
+               A.USER_GRD_CD_DSCTN,
+               A.USER_STTS_SN,
+               CEIL(NOW() - IFNULL(A.PSWD_CHG_DT, A.REG_DT)) PSWD_CHG_DT_CO
+          FROM TN_USER A
+         WHERE A.USER_IDNTF_NM = #{userId}
+    </select>
+    
+    <select id="selectEntrprsEtcInfo" parameterType="loginVo" resultType="loginVo">
+        SELECT USER_ID
+<!--              , CRNO -->
+<!--              , JURIRNO2 -->
+<!--              , BRNO -->
+<!--              , BIZRNO2 -->
+<!--              , BIZRNO3 -->
+<!--              , PIC_NM -->
+<!--              , DEPT_NM -->
+<!--              , JBTTL_NM -->
+             , MBL_RGN_TELNO
+             , MBL_TELOFC_TELNO
+             , MBL_INDIV_TELNO
+<!--              , DEPT_RGN_TELNO -->
+<!--              , DEPT_TELOFC_TELNO -->
+<!--              , DEPT_INDIV_TELNO -->
+<!--              , RGN_FXNO -->
+<!--              , TELOFC_FXNO -->
+<!--              , INDIV_FXNO -->
+<!--              , RPRSV_NM -->
+          FROM TN_USER_ENTRPRS_ETC_INFO
+         WHERE USER_ID = #{userId}
+    </select>
+
+    <select id="selectIndvdlEtcInfo" parameterType="loginVo" resultType="loginVo">
+        SELECT USER_ID
+<!--              , RRNO -->
+<!--              , IHIDNUM2 -->
+             , MBL_RGN_TELNO
+             , MBL_TELOFC_TELNO
+             , MBL_INDIV_TELNO
+<!--              , BRDT -->
+<!--              , BRTH_YMD_CLSF_SN -->
+<!--              , GNDR_CLSF_SN -->
+<!--              , EML_RCPTN_AGRE_CLSF_SN -->
+<!--              , SMS_RCPTN_CLSF_SN -->
+<!--              , LAST_ACBG_NO -->
+<!--              , MRG_SE_SN -->
+<!--              , WRC_NM -->
+<!--              , JBTTL_NM -->
+<!--              , WRC_ZIP1 -->
+<!--              , WRC_ZIP2 -->
+<!--              , WRC_ZIP -->
+<!--              , WRC_ADDR -->
+<!--              , WRC_DADDR -->
+<!--              , WRC_RGN_TELNO -->
+<!--              , WRC_TELOFC_TELNO -->
+<!--              , WRC_INDIV_TELNO -->
+          FROM TN_USER_ETC_INFO
+         WHERE USER_ID = #{userId}
+    </select>
+
+    <select id="selectId" parameterType="loginVo" resultType="loginVo">
+        SELECT A.USER_IDNTF_NM,
+               A.USER_ID,
+               A.USER_NM,
+               A.USER_PSWD,
+               A.EML_ID,
+               A.EML_SITE_NM,
+               A.RGN_TELNO,
+               A.TELOFC_TELNO,
+               A.INDIV_TELNO,
+               A.ZIP,
+               A.USER_ADDR,
+               A.DADDR,
+               A.USER_TYPE_NM,
+               A.USER_GRD_CD_DSCTN,
+               A.USER_STTS_SN
+          FROM TN_USER A, TN_USER_ETC_INFO B
+         WHERE A.USER_NM = #{userNm}
+          and B.MBL_RGN_TELNO = #{mblRgnTelno}
+          and B.MBL_TELOFC_TELNO = #{mblTelofcTelno}
+          and B.MBL_INDIV_TELNO = #{mblIndivTelno}
+    </select>
+
+    <insert id="insertLoginTryLog" parameterType="loginVo">
+        INSERT INTO TH_USER_CONECT(
+            USER_ID, LGN_DT, LGN_IP_ADDR, LGN_RSLT_NO
+        )VALUES(
+            #{userId}, NOW(), #{ipAddr}, #{lgnRsltNo}
+        )
+    </insert>
+
+    <update id="updateUserLoginInfo" parameterType="loginVo">
+        UPDATE TN_USER
+           SET LGN_NMTM = LGN_NMTM + 1,
+               LAST_CNTN_DT = NOW()
+         WHERE USER_ID = #{userId}
+    </update>
+
+    <select id="selectTodayLoginCo" parameterType="loginVo" resultType="int">
+        SELECT COUNT(*)
+          FROM TH_USER_CONECT
+         WHERE USER_ID  = #{userId}
+           AND LGN_RSLT_NO = 'ok'
+           AND DATE_FORMAT(LGN_DT,'%Y%m%d') = DATE_FORMAT(NOW(),'%Y%m%d')
+    </select>
+
+    <select id="selectUserInfo" parameterType="loginVo" resultType="loginVo">
+        SELECT COALESCE(JOIN_TYPE_SN, 1001) AS joinTypeSn,
+               COALESCE(DATE_FORMAT(NOW(),'YYYY') - SUBSTR((SELECT BRDT FROM TN_USER_ETC_INFO WHERE USER_ID = #{userId}), 0, 4) + 1,0) AS age,
+               COALESCE((SELECT GNDR_CLSF_SN FROM TN_USER_ETC_INFO WHERE USER_ID = #{userId}),1003)  AS gndrClsfSn
+          FROM TN_USER A
+         WHERE A.USER_ID = #{userId}
+    </select>
+
+    <select id="selectUserAllCount" parameterType="loginVo" resultType="int">
+        SELECT COUNT(*)s
+          FROM TN_USER
+    </select>
+
+    <insert id="insertLogStatsCount" parameterType="loginVo">
+        INSERT INTO TS_USER_CONECT 
+        	(
+            CNTN_YR,CNTN_MM,CNTN_DAY,WHOL_MBR_CNT,LGN_MBR_CNT
+            <if test="ageType != null and ageType != ''">
+            ,TEENS_CNTN_NMTM,TWENTY_CNTN_NMTM,THIRTY_CNTN_NMTM,FORTY_CNTN_NMTM,FIFTY_CNTN_NMTM,SIXTY_CNTN_NMTM,SVNT_ABOVE_CNTN_NMTM
+            </if>
+            <if test="gndrClsfSn != null and gndrClsfSn != ''">
+            ,MALE_CNTN_NMTM, FEMALE_CNTN_NMTM, ETC_GNDR_CNTN_NMTM
+            </if>
+            <if test="joinTypeSn != null and joinTypeSn != ''">
+            ,RNAME_CERT_CNTN_NMTM, GPIN_CNTN_NMTM, CERT_CNTN_NMTM, ETC_CNTN_NMTM
+            </if>
+        )
+        VALUES(
+            DATE_FORMAT(NOW(), 'YYYY'), DATE_FORMAT(NOW(), 'MM'), DATE_FORMAT(NOW(),'DD'), #{wholMbrCnt}, 1
+            <if test="ageType != null and ageType != ''">
+                <if test='ageType == "A"'>
+                ,1,0,0,0,0,0,0
+                </if>
+                <if test='ageType == "B"'>
+                ,0,1,0,0,0,0,0
+                </if>
+                <if test='ageType == "C"'>
+                ,0,0,1,0,0,0,0
+                </if>
+                <if test='ageType == "D"'>
+                ,0,0,0,1,0,0,0
+                </if>
+                <if test='ageType == "E"'>
+                ,0,0,0,0,1,0,0
+                </if>
+                <if test='ageType == "F"'>
+                ,0,0,0,0,0,1,0
+                </if>
+                <if test='ageType == "G"'>
+                ,0,0,0,0,0,0,1
+                </if>
+                <if test='ageType == "H"'>
+                ,0,0,0,0,0,0,1
+                </if>
+            </if>
+            <if test="gndrClsfSn != null and gndrClsfSn != ''">
+                <if test="gndrClsfSn == 1001">
+                ,1,0,0
+                </if>
+                <if test="gndrClsfSn == 1002">
+                ,0,1,0
+                </if>
+                <if test="gndrClsfSn == 1003">
+                ,0,0,1
+                </if>
+            </if>
+            <if test="joinTypeSn != null and joinTypeSn != ''">
+                <if test="joinTypeSn == 1001">
+                ,1,0,0,0
+                </if>
+                <if test="joinTypeSn == 1002">
+                ,0,1,0,0
+                </if>
+                <if test="joinTypeSn == 1003">
+                ,0,0,1,0
+                </if>
+                <if test="joinTypeSn == 1004">
+                ,0,0,0,1
+                </if>
+            </if>
+        )
+        ON DUPLICATE KEY 
+        UPDATE
+        LGN_MBR_CNT = LGN_MBR_CNT + 1,
+        <if test="joinTypeSn != null and joinTypeSn != ''">
+                <if test="joinTypeSn == 1001">
+                RNAME_CERT_CNTN_NMTM = RNAME_CERT_CNTN_NMTM + 1,
+                </if>
+                <if test="joinTypeSn == 1002">
+                GPIN_CNTN_NMTM = GPIN_CNTN_NMTM + 1,
+                </if>
+                <if test="joinTypeSn == 1003">
+                CERT_CNTN_NMTM = CERT_CNTN_NMTM + 1,
+                </if>
+                <if test="joinTypeSn == 1004">
+                ETC_CNTN_NMTM = ETC_CNTN_NMTM + 1,
+                </if>
+            </if>
+            <if test="ageType != null and ageType != ''">
+                <if test='ageType == "A"'>
+                    TEENS_CNTN_NMTM = TEENS_CNTN_NMTM + 1,
+                </if>
+                <if test='ageType == "B"'>
+                    TWENTY_CNTN_NMTM = TWENTY_CNTN_NMTM + 1,
+                </if>
+                <if test='ageType == "C"'>
+                    THIRTY_CNTN_NMTM = THIRTY_CNTN_NMTM + 1,
+                </if>
+                <if test='ageType == "D"'>
+                    FORTY_CNTN_NMTM = FORTY_CNTN_NMTM + 1,
+                </if>
+                <if test='ageType == "E"'>
+                    FIFTY_CNTN_NMTM = FIFTY_CNTN_NMTM + 1,
+                </if>
+                <if test='ageType == "F"'>
+                    SIXTY_CNTN_NMTM = SIXTY_CNTN_NMTM + 1,
+                </if>
+                <if test='ageType == "G"'>
+                    SVNT_ABOVE_CNTN_NMTM = SVNT_ABOVE_CNTN_NMTM + 1,
+                </if>
+                <if test='ageType == "H"'>
+                    SVNT_ABOVE_CNTN_NMTM = SVNT_ABOVE_CNTN_NMTM + 1,
+                </if>
+            </if>
+            <if test="gndrClsfSn != null and gndrClsfSn != ''">
+                <if test="gndrClsfSn == 1001">
+                    MALE_CNTN_NMTM = MALE_CNTN_NMTM + 1
+                </if>
+                <if test="gndrClsfSn == 1002">
+                    FEMALE_CNTN_NMTM = FEMALE_CNTN_NMTM + 1
+                </if>
+                <if test="gndrClsfSn == 1003">
+                    ETC_GNDR_CNTN_NMTM = ETC_GNDR_CNTN_NMTM + 1
+                </if>
+            </if>
+    </insert>
+
+</mapper>

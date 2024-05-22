@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zesinc.user.main.MainMapper">
+
+    <!-- 게시글 목록 -->
+    <select id="selectMainBbsList" parameterType="baseVo" resultType="mainBbsVo">
+        SELECT
+            Y.*,
+            (SELECT BBS_NM FROM TN_BBS_SETUP WHERE BBS_SN = Y.BBS_SN) AS BBS_NM,
+            (SELECT B.CLSF_NM
+              FROM TN_BBS_CTGRY B
+             WHERE B.BBS_SN = Y.BBS_SN
+               AND B.CLSF_NO = Y.CLSF_NO) AS CLSF_NM,
+            (SELECT B.LWRK_CLSF_NM
+              FROM TN_BBS_LWPRT_CTGRY B
+             WHERE B.BBS_SN = Y.BBS_SN
+               AND B.CLSF_NO = Y.CLSF_NO AND B.LWRK_CLSF_SN = Y.LWRK_CLSF_SN) AS LWRK_CLSF_NM,
+            TO_CHAR(Y.REG_DT_TMP, 'YYYY-MM-DD') AS REG_DT,
+            TRUNC(TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDD'), 'YYYYMMDD')) - TRUNC(TO_DATE(TO_CHAR(Y.REG_DT_TMP, 'YYYYMMDD'), 'YYYYMMDD')) AS PASS_DAY
+        FROM (
+            SELECT
+                A.BBS_SN,
+                A.BBS_DOC_NO,
+                A.CLSF_NO,
+                A.LWRK_CLSF_SN,
+                A.TTL,
+                A.FILE_SN,
+                A.INQ_CNT,
+                A.DEPT_NM,
+                A.RGTR_NM,
+                A.REG_DT AS REG_DT_TMP,
+                A.FLCTN_COL_CN1,
+                A.FLCTN_COL_CN2,
+                A.FLCTN_COL_CN3,
+                A.FLCTN_COL_CN4,
+                A.FLCTN_COL_CN5,
+                A.FLCTN_COL_CN6,
+                A.FLCTN_COL_CN7,
+                A.FLCTN_COL_CN8,
+                A.FLCTN_COL_CN9,
+                A.FLCTN_COL_CN10
+            FROM 
+                TN_BBS A
+            WHERE
+                    A.MNGR_DEL_YN = 'N'
+                AND A.DEL_YN = 'N'
+                AND A.RLS_YN = 'Y'
+                AND A.BBS_SN = #{paramMap.q_bbsSn}
+                <if test="paramMap.q_clsfNo != null and paramMap.q_clsfNo != ''">
+                AND A.CLSF_NO = #{paramMap.q_clsfNo}
+                </if>
+                <if test="paramMap.q_lwrkClsfSn != null and paramMap.q_lwrkClsfSn != ''">
+                AND A.LWRK_CLSF_SN = #{paramMap.q_lwrkClsfSn}
+                </if>
+            ORDER BY A.RFRNC_DOC_NO DESC, A.SORT_SN ASC
+        ) Y
+        WHERE ROWNUM &lt;= #{paramMap.q_pagingEndNum}
+    </select>
+    
+    	<select id="selectMainFormList" parameterType="baseVo" resultType="formInfoVo">
+    	    	SELECT 
+			Y.*,
+			TRUNC(TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDD'), 'YYYYMMDD')) - TRUNC(TO_DATE(TO_CHAR(Y.REG_DT_TMP, 'YYYYMMDD'), 'YYYYMMDD')) AS PASS_DAY
+		FROM (
+			SELECT 
+					B.SITE_SN,
+					A.FORM_SN,
+					A.FORM_TTL,
+					A.FORM_EXPLN,
+					TO_CHAR(A.BGNG_YMD, 'YYYY/MM/DD HH24:MI') AS BGNG_YMD,
+					TO_CHAR(A.END_YMD, 'YYYY/MM/DD HH24:MI') AS END_YMD,
+					A.RSPNS_NOPE,
+					A.LMT_NOPE,
+					A.FILE_SN,
+					A.FILE_PATH_NM,
+					A.FRSTCM_YN,
+					A.PSTG_YN,
+					A.WRTR_INFO_CLCT_STTS_NO,
+					A.PRVC_CLCT_AGRE_CN,
+					A.DEL_YN,
+					A.DEL_DT,
+					A.DATA_YN,
+					A.RGTR_ID,
+					A.REG_DT AS REG_DT_TMP,
+					A.MDFR_ID,
+					A.UPDT_DT
+				FROM 
+					TN_FORM_INFO A,
+					TN_FORM_DOMN B
+				WHERE 
+					A.FORM_SN = B.FORM_SN
+				AND B.SITE_SN = #{paramMap.q_siteSn}
+				AND PSTG_YN = 'Y'
+				AND DEL_YN = 'N'
+				AND A.DATA_YN = 'Y'
+				ORDER BY 
+					REG_DT DESC
+		)Y 
+		WHERE ROWNUM &lt;= #{paramMap.q_pagingEndNum}
+	</select>
+</mapper>

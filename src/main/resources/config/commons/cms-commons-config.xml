@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+
+    <!-- USER_MENU 관리 기본 설정 -->
+    <cms-config>
+        <!-- 도메인 캐쉬 조회 시 설정된 도메인으로 자동 맵핑함 / 사용 법 : localhost 을 사용하여 user.zesinc.co.kr 도메인 캐시에 접근 가능  -->
+        <!-- <domains>
+            <domain>user.zesinc.co.kr</domain>
+            <name>localhost</name>
+            <port>80</port>
+        </domains> -->
+        <domains>
+            <domain>openworks4.zesinc.co.kr</domain>
+            <name>localhost</name>
+            <port>80</port>
+            
+            <domain>openworks4.zesinc.co.kr</domain>
+            <name>192.168.10.84</name>
+            <port>80</port>
+        </domains>
+
+        <dummyRoot>
+            <hghrkMenuEngNm>ROOT</hghrkMenuEngNm>
+            <parentMenuCode>DOMAIN</parentMenuCode>
+            <menuSn>web</menuSn>
+            <menuNm>dummy</menuNm>
+            <menuDepth>-1</menuDepth>
+            <sortOrder>-1</sortOrder>
+        </dummyRoot>
+
+        <!-- TOP 메뉴 표시 뎁스 범위 지정 -->
+        <topMenuDepth>
+            <minDepth>0</minDepth>
+            <maxDepth>1</maxDepth>
+        </topMenuDepth>
+
+        <!-- 주의 !! 반드시 경로는 / 로 표시하며 제일 마지막을 / 로 닫아 주셔야 합니다. -->
+        <basePath>
+            <decoratorFileRoot>WEB-INF/jsp/common/decorator/</decoratorFileRoot>
+            <menuDataRoot>webcontent/menu/data/</menuDataRoot>
+            <resourceFileRoot>webcontent/menu/resources/</resourceFileRoot>
+        </basePath>
+
+        <!-- 권한이 없는 경우 표시될 데코레이터 파일명 참조파일 : /WEB-INF/jsp/common/decorator/NoAuth.jsp  -->
+        <noAuthPage>NoAuth</noAuthPage>
+
+    </cms-config>
+<typeAliases></typeAliases>
+</configuration>

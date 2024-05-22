@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zesinc.user.form.FormMapper">
+
+	<!-- 신청 목록 검색 (srchType에 따라서 조건이 변경됨) -->
+	<sql id="incFormWhere">
+        <if test="paramMap.q_searchVal != null  and paramMap.q_searchVal != ''">
+        	<if test="paramMap.q_searchKey == 1001">
+        		AND FORM_TTL LIKE '%' || #{paramMap.q_searchVal} || '%'
+        	</if>
+        	<if test="paramMap.q_searchKey == 1002">
+        		AND FORM_EXPLN LIKE '%' || #{paramMap.q_searchVal} || '%'
+        	</if>
+        </if>
+    </sql>
+    
+    <!-- 신청 목록 조회 -->
+    <select id="selectFormList" parameterType="formInfoVo" resultType="formInfoVo">
+    	SELECT 
+			Y.*
+		FROM (
+			SELECT 
+				ROWNUM NUM, 
+				X.* 
+			FROM (
+				SELECT 
+					B.SITE_SN,
+					A.FORM_SN,
+					A.FORM_TTL,
+					A.FORM_EXPLN,
+					TO_CHAR(A.BGNG_YMD, 'YYYY/MM/DD HH24:MI') AS BGNG_YMD,
+					TO_CHAR(A.END_YMD, 'YYYY/MM/DD HH24:MI') AS END_YMD,
+					A.RSPNS_NOPE,
+					A.LMT_NOPE,
+					A.FILE_SN,
+					A.FILE_PATH_NM,
+					A.FRSTCM_YN,
+					A.PSTG_YN,
+					A.WRTR_INFO_CLCT_STTS_NO,
+					A.PRVC_CLCT_AGRE_CN,
+					A.DEL_YN,
+					A.DEL_DT,
+					A.DATA_YN,
+					A.RGTR_ID,
+					A.REG_DT,
+					A.MDFR_ID,
+					A.UPDT_DT
+				FROM 
+					TN_FORM_INFO A,
+					TN_FORM_DOMN B
+				WHERE
+					A.FORM_SN = B.FORM_SN
+				AND B.SITE_SN = #{siteSn}
+				AND A.PSTG_YN = 'Y'
+				AND A.DEL_YN = 'N'
+				AND A.DATA_YN = 'Y'
+				<include refid="incFormWhere"/>
+				ORDER BY 
+					REG_DT DESC
+			)X 
+			WHERE ROWNUM &lt;= #{paramMap.q_pagingEndNum}
+		)Y 
+		WHERE NUM &gt;= #{paramMap.q_pagingStartNum}
+	</select>
+	
+	<!-- 신청 목록 조회 건수 -->
+	<select id="selectFormListCount" parameterType="formInfoVo" resultType="int">
+		SELECT 
+			COUNT(A.FORM_SN) AS TOTAL_COUNT
+		FROM 
+			TN_FORM_INFO A,
+			TN_FORM_DOMN B
+		WHERE
+			A.FORM_SN = B.FORM_SN
+		AND B.SITE_SN = #{siteSn}
+		AND A.PSTG_YN = 'Y'
+		AND A.DEL_YN = 'N'
+		AND A.DATA_YN = 'Y'
+		<include refid="incFormWhere"/>
+		ORDER BY 
+			REG_DT DESC
+	</select>
+	
+	<!-- 신청 상세 조회 -->
+	<select id="selectForm" parameterType="formInfoVo" resultType="formInfoVo">
+		SELECT 
+			B.SITE_SN,
+			A.FORM_SN,
+			A.FORM_TTL,
+			A.FORM_EXPLN,
+			TO_CHAR(A.BGNG_YMD, 'YYYY/MM/DD HH24:MI') AS BGNG_YMD,
+			TO_CHAR(A.END_YMD, 'YYYY/MM/DD HH24:MI') AS END_YMD,
+			A.RSPNS_NOPE,
+			A.LMT_NOPE,
+			A.FILE_SN,
+			A.FILE_PATH_NM,
+			A.FRSTCM_YN,
+			A.PSTG_YN,
+			A.WRTR_INFO_CLCT_STTS_NO,
+			A.PRVC_CLCT_AGRE_CN,
+			A.DEL_YN,
+			A.DEL_DT,
+			A.DATA_YN,
+			A.RGTR_ID,
+			A.REG_DT,
+			A.MDFR_ID,
+			A.UPDT_DT
+		FROM 
+			TN_FORM_INFO A,
+			TN_FORM_DOMN B
+		WHERE 
+			A.FORM_SN = B.FORM_SN
+		AND B.SITE_SN = #{siteSn}
+		AND A.FORM_SN = #{paramMap.q_formSn}
+	</select>
+
+	<!-- 신청화면 그룹 목록 조회 -->
+	<select id="selectFormGroupList" parameterType="formGroupVo" resultType="formGroupVo">
+		SELECT 
+			* 
+		FROM 
+			TN_FORM_GROUP 
+		WHERE 
+			FORM_SN = #{paramMap.q_formSn}
+		ORDER BY 
+			SORT_SN ASC
+	</select>
+	
+	<!-- 신청화면 항목 목록 조회 -->
+	<select id="selectFormGroupItemList" parameterType="groupItemVo" resultType="groupItemVo">
+		SELECT 
+			* 
+		FROM 
+			TN_FORM_GROUP_ITEM 
+		WHERE 
+			FORM_SN = #{formSn}
+		AND  
+			GROUP_SN = #{groupSn}
+		ORDER BY 
+			SORT_SN ASC
+	</select>
+	
+	<!-- 신청화면 옵션 목록 조회 -->
+	<select id="selectItemOptList" parameterType="itemOptVo" resultType="itemOptVo">
+		SELECT
+			*
+		FROM
+			TN_FORM_ITEM_OPT
+		WHERE
+			FORM_SN = #{formSn}
+		AND 
+			GROUP_SN = #{groupSn}
+		AND
+			ARTCL_SN = #{artclSn}
+		ORDER BY 
+			GROUP_SN, ARTCL_SN, OPT_SN ASC			
+	</select>
+	
+	<!-- 응답헤더 등록 -->
+	<insert id="insertFormRspnsHead" parameterType="headVo">
+		<selectKey order="BEFORE" keyProperty="rspnsHeadNo" resultType="Integer">
+            SELECT NVL(MAX(RSPNS_HEAD_NO), 0) + 1
+              FROM TN_FORM_RSPNS_OPT_HEAD
+        </selectKey>
+		INSERT INTO TN_FORM_RSPNS_OPT_HEAD (
+			FORM_SN,
+			RSPNS_HEAD_NO,
+			RSPNS_NM,
+			RSPNS_EML_ID,
+			RSPNS_EML_SITE_NM,
+			RGN_TELNO,
+			TELOFC_TELNO,
+			INDIV_TELNO	
+		) VALUES (
+			#{formSn},
+			#{rspnsHeadNo},
+			#{rspnsNm},
+			#{rspnsEmlId},
+			#{rspnsEmlSiteNm},
+			#{rgnTelno},
+			#{telofcTelno},
+			#{indivTelno}
+		)
+	</insert>
+	
+	<!-- 응답헤더일련번호 가져오기 -->
+	<select id="selectRspnsHeadNo" parameterType="rspnsVo" resultType="Integer">
+		SELECT 
+			RSPNS_HEAD_NO 
+		FROM (
+		    SELECT 
+		        RSPNS_HEAD_NO
+		    FROM 
+		    	TN_FORM_RSPNS_OPT_HEAD
+		    ORDER BY 
+		    	ROWNUM DESC
+		    )
+		WHERE 
+			ROWNUM = 1
+	</select>
+	
+	<!-- 응답인원 업데이트 -->
+	<update id="insertLmtNopeCount" parameterType="headVo">
+		UPDATE 
+			TN_FORM_INFO A 
+		SET 
+			A.RSPNS_NOPE = (
+							SELECT 
+								COUNT(B.RSPNS_HEAD_NO) 
+							FROM 
+								TN_FORM_RSPNS_OPT_HEAD B 
+							WHERE 
+								A.FORM_SN = B.FORM_SN
+							)
+		WHERE 
+			FORM_SN = #{formSn}
+	</update>
+	
+	<!-- 응답내용 등록 -->
+	<insert id="insertFormRspnsCn" parameterType="rspnsVO">
+		<selectKey order="BEFORE" keyProperty="rspnsSn" resultType="Integer">
+            SELECT NVL(MAX(RSPNS_SN), 0) + 1
+              FROM TN_FORM_RSPNS
+        </selectKey>
+		INSERT INTO TN_FORM_RSPNS (
+			FORM_SN,
+			GROUP_SN,
+			ARTCL_SN,
+			RSPNS_HEAD_NO,
+			RSPNS_SN,
+			RSPNS_ANS_CN
+		) VALUES (
+			#{formSn},
+			#{groupSn},
+			#{artclSn},
+			#{rspnsHeadNo},
+			#{rspnsSn},
+			#{rspnsAnsCn}
+		)
+	</insert>
+	
+	<!-- 폼 응답관리 조건 -->
+	<sql id="incRspnsIemWhere">
+		<where>
+			A.FORM_SN = B.FORM_SN
+			AND A.GROUP_SN = B.GROUP_SN
+			AND A.FORM_SN = #{formSn}
+			AND A.USE_YN = 'Y'			
+			AND B.USE_YN = 'Y'
+		</where>
+	</sql>
+	
+	<!-- 폼 응답관리 항목 리스트 -->
+	<select id="selectRspnsIemList"
+		parameterType="groupItemVo" resultType="groupItemVo">
+		SELECT
+		<trim suffixOverrides=",">
+			A.GROUP_SN,
+			A.FORM_SN,
+			A.USE_YN,
+			A.SORT_SN AS GRP_SORT_SN,
+			B.ARTCL_SN,
+			B.ARTCL_NM,
+			B.ARTCL_TYPE_CD,
+			B.FORM_SN,
+			B.GROUP_SN,
+			B.USE_YN AS IEM_USE_YN,
+			B.SORT_SN AS IEM_SORT_SN
+		</trim>
+		FROM
+		TN_FORM_GROUP A, TN_FORM_GROUP_ITEM B
+		<include refid="incRspnsIemWhere" />
+		ORDER BY GRP_SORT_SN ASC, IEM_SORT_SN ASC
+	</select>
+	
+	<!-- 폼 응답관리 응답 조회 -->
+    <select id="selectRspns" parameterType="rspnsVo" resultType="rspnsVo">
+       SELECT
+       <trim suffixOverrides=",">  
+			A.FORM_SN,
+			A.RSPNS_HEAD_NO,
+			A.ARTCL_SN,
+			A.RSPNS_ANS_CN,
+			A.RSPNS_SN,
+			A.GROUP_SN
+		</trim>
+        FROM
+            TN_FORM_RSPNS A
+		WHERE A.FORM_SN = #{formSn}
+			AND A.RSPNS_HEAD_NO = #{rspnsHeadNo}
+        ORDER BY A.GROUP_SN ASC, A.ARTCL_SN ASC
+    </select>
+    
+    <!-- 폼 응답관리 업데이트 -->
+    <update id="updateRspnsHeadAnsCn" parameterType="rspnsVo">
+		UPDATE TN_FORM_RSPNS_OPT_HEAD A
+		<set>
+			RSPNS_HEAD_ANS_CN = #{rspnsAnsCns},
+			RSPNS_ARTCL_NM = #{rspnsArtclNms}
+		</set>
+		WHERE A.RSPNS_HEAD_NO = #{rspnsHeadNo}
+	</update>
+</mapper>

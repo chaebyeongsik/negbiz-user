@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zesinc.user.cms.evl.CmsEvlMapper">
+
+    <!-- 사용자메뉴평가 조회 -->
+    <select id="selectCmsEvl" parameterType="cmsEvlVo" resultType="cmsEvlVo">
+        SELECT
+        <trim suffixOverrides=",">
+            A.SITE_SN,
+            A.USER_MENU_ENG_NM,
+            A.REG_YMD,
+            A.ARTCL_SN,
+            A.SUM_SCR,
+            A.WHOL_RSPNS_CNT,
+        </trim>
+        FROM
+            TN_USER_MENU_EVL A
+        WHERE
+                 A.SITE_SN = #{siteSn}
+                AND A.USER_MENU_ENG_NM = #{userMenuEngNm}
+                AND A.REG_YMD = #{regYmd}
+                AND A.ARTCL_SN = #{artclSn}
+    </select>
+
+    <!-- 사용자메뉴평가 등록 -->
+    <insert id="insertCmsEvl" parameterType="cmsEvlVo">
+        INSERT INTO TN_USER_MENU_EVL (
+        <trim suffixOverrides=",">
+            SITE_SN,
+            USER_MENU_ENG_NM,
+            REG_YMD,
+            ARTCL_SN,
+            SUM_SCR,
+            WHOL_RSPNS_CNT,
+        </trim>
+        ) VALUES (
+        <trim suffixOverrides=",">
+            #{siteSn},
+            #{userMenuEngNm},
+            #{regYmd},
+            #{artclSn},
+            #{artclSn},
+            1,
+        </trim>
+        )
+    </insert>
+
+    <!-- 사용자메뉴평가 수정 -->
+    <update id="updateCmsEvl" parameterType="cmsEvlVo">
+        UPDATE TN_USER_MENU_EVL 
+          <set>
+            SUM_SCR = SUM_SCR + #{artclSn},
+            WHOL_RSPNS_CNT = WHOL_RSPNS_CNT + 1,
+          </set>
+        WHERE
+             SITE_SN = #{siteSn}
+            AND USER_MENU_ENG_NM = #{userMenuEngNm}
+            AND REG_YMD = #{regYmd}
+            AND ARTCL_SN = #{artclSn}
+    </update>
+
+    <!--  기존에 메뉴 평가를 했었는지 확인 -->
+    <select id="selectCmsEvlDetl" parameterType="cmsEvlVo" resultType="int">
+            SELECT COUNT(1)
+            FROM TN_USER_MENU_EVL_DETAIL
+            WHERE
+                 SITE_SN = #{siteSn}
+                AND USER_MENU_ENG_NM = #{userMenuEngNm}
+                AND RGTR_ID = #{rgtrId}
+    </select>
+
+    <!-- 사용자메뉴평가상세 등록 -->
+    <insert id="insertCmsEvlDetl" parameterType="cmsEvlVo">
+        <selectKey order="BEFORE" keyProperty="regSn" resultType="int">
+            SELECT NVL(MAX(REG_SN), 0) + 1
+            FROM TN_USER_MENU_EVL_DETAIL
+            WHERE
+                 SITE_SN = #{siteSn}
+                AND USER_MENU_ENG_NM = #{userMenuEngNm}
+                AND REG_YMD = #{regYmd}
+                AND ARTCL_SN = #{artclSn}
+        </selectKey>
+        INSERT INTO TN_USER_MENU_EVL_DETAIL (
+        <trim suffixOverrides=",">
+            SITE_SN,
+            USER_MENU_ENG_NM,
+            REG_YMD,
+            ARTCL_SN,
+            REG_SN,
+            OPNN_CN,
+            RGTR_IP_ADDR,
+            RGTR_NM,
+            RGTR_ID,
+            REG_DT,
+        </trim>
+        ) VALUES (
+        <trim suffixOverrides=",">
+            #{siteSn},
+            #{userMenuEngNm},
+            #{regYmd},
+            #{artclSn},
+            #{regSn},
+            #{opnnCn},
+            #{rgtrIpAddr},
+            #{rgtrNm},
+            #{rgtrId},
+            SYSDATE,
+        </trim>
+        )
+    </insert>
+
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zesinc.user.banner.BannerMapper">
+
+    <!-- 배너 목록 -->
+    <select id="selectBannerList" parameterType="userBannerVo" resultType="userBannerVo">
+        SELECT
+        <trim suffixOverrides=",">
+            A.REG_SN,
+            A.TTL,
+            A.BGNG_YMD,
+            A.END_YMD,
+            A.USE_YN,
+            A.LINK_TYPE_NM,
+            A.BNN_TYPE_NM,
+            A.LINK_URL_ADDR,
+            A.IMG_ALTRTV_NM,
+            A.LINK_EXPLN,
+            A.FILE_PATH_NM
+        </trim>
+        FROM
+            TN_BANNER A, TN_BANNER_DOMN B
+        WHERE
+                A.REG_SN = B.REG_SN
+            AND A.USE_YN = 'Y'
+            AND A.BGNG_YMD &lt;= TO_CHAR(SYSDATETIME, 'YYYYMMDD')
+            AND A.END_YMD &gt;= TO_CHAR(SYSDATETIME, 'YYYYMMDD')
+            AND A.BNN_TYPE_NM = #{paramMap.q_bnnTypeNm}
+            AND B.SITE_SN =  #{paramMap.q_siteSn}
+        ORDER BY A.SORT_SN ASC
+    </select>
+
+</mapper>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zesinc.user.cms.preview.CmsPreviewMapper">
+
+    <select id="selectUserMenuData" parameterType="cmsPreviewVo" resultType="cmsPreviewVo">
+        SELECT
+            A.SITE_SN,
+            A.USER_MENU_ENG_NM,
+            A.CONTS_SN,
+            A.STRT_CONTS_CN,
+            A.MAIN_CONTS_CN
+        FROM
+            TN_USER_MENU_CNTNTS A
+        WHERE
+                A.SITE_SN =  #{paramMap.q_siteSn}
+            AND A.USER_MENU_ENG_NM = #{paramMap.q_userMenuEngNm}
+            AND A.CONTS_SN = #{paramMap.q_contsSn}
+    </select>
+
+    <!-- 레이아웃/컨텐츠 미리보기용 데이터 -->
+    <select id="selectUserMenuPreview" parameterType="cmsPreviewVo" resultType="cmsCacheVo">
+        SELECT
+        <trim suffixOverrides=",">
+            A.SITE_SN,
+            (SELECT SITE_EXPLN FROM TN_DOMN WHERE SITE_SN = A.SITE_SN) AS SITE_EXPLN,
+            A.USER_MENU_ENG_NM,
+            A.MENU_NM,
+            A.TTL,
+            A.BSC_PATH_NM,
+            A.MENU_PATH_NM,
+            A.HGHRK_MENU_ENG_NM,
+            (SELECT C.MENU_NM FROM TN_USER_MENU C
+                 WHERE C.SITE_SN = #{siteSn}
+                     AND C.USER_MENU_ENG_NM = A.HGHRK_MENU_ENG_NM) AS TOP_MENU_NM,
+            A.UP_MENU_ENG_NM,
+            (SELECT C.MENU_NM FROM TN_USER_MENU C
+                 WHERE C.SITE_SN = #{siteSn}
+                     AND C.USER_MENU_ENG_NM = A.UP_MENU_ENG_NM) AS PARNTS_MENU_NM,
+            A.MENU_LVL_SN,
+            A.SORT_SN,
+            A.USER_MENU_URL_ADDR,
+            A.LYT_CD_NO,
+            A.LINK_TYPE_NM,
+            A.PIC_INDCT_YN,
+            A.TKCG_DEPT_CD_ID,
+            (SELECT DEPT_NM FROM TN_DEPT WHERE DEPT_CD_ID = A.TKCG_DEPT_CD_ID) AS CHRG_DEPT_NM,
+            A.PIC_ID,
+            (SELECT PIC_NM FROM TN_MNGR WHERE PIC_ID = A.PIC_ID) AS PIC_NM,
+            A.CONTS_SN,
+            A.STRT_CONTS_CN,
+            A.END_CONTS_CN,
+            A.USER_MENU_IMG_NM,
+            A.MENU_TTL_IMG_NM,
+            A.MENU_ON_IMG_NM,
+            A.MENU_OFF_IMG_NM,
+            A.FILE_SN,
+            A.DGSTFN_INDCT_YN,
+            A.INDCT_YN,
+            A.USE_YN,
+            A.SNS_USE_YN,
+            A.SNS_PRMTT_NM,
+            B.USER_MENU_SRCH_NM,
+            B.USER_MENU_EXPLN,
+            B.SITE_SRCH_NM,
+            B.MENU_TAG_CN,
+            B.CPRGT_USE_YN,
+            B.CPRGT_TYPE_NM,
+            B.CPRGT_CN,
+        </trim>
+        FROM
+            TN_USER_MENU A LEFT OUTER JOIN TN_USER_MENU_META B
+        ON
+                A.SITE_SN = B.SITE_SN
+            AND A.USER_MENU_ENG_NM = B.USER_MENU_ENG_NM
+            AND A.USER_MENU_URL_ADDR != ''
+        WHERE
+                A.SITE_SN =  #{paramMap.q_siteSn}
+        <if test="paramMap.q_userMenuEngNm != null and paramMap.q_userMenuEngNm != ''">
+            AND A.USER_MENU_ENG_NM = #{paramMap.q_userMenuEngNm}
+        </if>
+        <if test="paramMap.q_lytCdNo != null and paramMap.q_lytCdNo != ''">
+            AND A.LYT_CD_NO = #{paramMap.q_lytCdNo}
+            LIMIT 1
+        </if>
+    </select>
+
+    <!-- 관리자 조회 -->
+    <select id="selectUserMenuMngr" parameterType="cmsCacheVo" resultType="cmsMngrCacheVo">
+        SELECT
+        <trim suffixOverrides=",">
+            A.PIC_ID,
+            A.DEPT_CD_ID,
+            (SELECT DEPT_NM
+               FROM TN_DEPT
+              WHERE DEPT_CD_ID = A.DEPT_CD_ID) AS DEPT_NM,
+            A.PIC_NM,
+            (SELECT CD_NM
+               FROM TC_CODE
+              WHERE UP_CD_ID = 'ofcps'
+                AND CD_ID = A.JBGD_CD_ID) AS CLSF_NM,
+            A.TASK_CN,
+            A.RGN_TELNO,
+            A.TELOFC_TELNO,
+            A.INDIV_TELNO,
+            A.RGN_FXNO,
+            A.TELOFC_FXNO,
+            A.INDIV_FXNO,
+            A.MBL_RGN_TELNO,
+            A.MBL_TELOFC_TELNO,
+            A.MOBLPHON_NO3,
+            A.EML_ID,
+            A.EML_SITE_NM,
+            A.USE_YN,
+            A.STTS_SN,
+        </trim>
+        FROM
+            TN_MNGR A
+        WHERE
+                A.USE_YN = 'Y'
+            AND A.PIC_ID = #{picId}
+    </select>
+
+</mapper>
